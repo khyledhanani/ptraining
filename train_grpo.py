@@ -3,7 +3,7 @@ from trl.rewards import accuracy_reward
 from datasets import load_dataset
 
 model_name = "Qwen/Qwen2.5-0.5B-Instruct"
-dataset = load_dataset("trl-lib/DeepMath-103K", split="train")
+dataset = load_dataset("trl-lib/DeepMath-103K", split="train").select(range(5000))
 
 training_args = GRPOConfig(
     output_dir="grpo-qwen-math",
@@ -15,10 +15,9 @@ training_args = GRPOConfig(
     gradient_checkpointing=True,
     logging_steps=10,
     save_steps=100,
-    max_prompt_length=256,
-    max_completion_length=512,
+    max_completion_length=256,
     num_generations=4,
-    report_to="none",
+    report_to="wandb",
 )
 
 trainer = GRPOTrainer(
