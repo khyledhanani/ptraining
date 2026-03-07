@@ -33,9 +33,10 @@ from contextlib import nullcontext
 
 from trl import GRPOTrainer, GRPOConfig
 from trl.rewards import accuracy_reward
-from trl.trainer.utils import is_conversational
+from trl.data_utils import is_conversational
 from trl.extras.profiling import profiling_context
-from accelerate.utils import unwrap_model_for_generation
+from trl.models.utils import unwrap_model_for_generation
+from transformers import Trainer as _BaseTrainer
 from datasets import load_dataset
 
 
@@ -197,7 +198,7 @@ class ArithmeticGRPOTrainer(GRPOTrainer):
             generate_inputs = self.processing_class(
                 text=prompts, padding=True, padding_side="left", return_tensors="pt"
             )
-        generate_inputs = super()._prepare_inputs(generate_inputs)
+        generate_inputs = _BaseTrainer._prepare_inputs(self, generate_inputs)
 
         gc              = self.generation_config
         num_generations = self.num_generations if mode == "train" else self.num_generations_eval
