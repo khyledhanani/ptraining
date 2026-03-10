@@ -6,18 +6,22 @@ model_name = "Qwen/Qwen2.5-0.5B-Instruct"
 dataset = load_dataset("trl-lib/DeepMath-103K", split="train").select(range(5000))
 
 training_args = GRPOConfig(
-    output_dir="grpo-qwen-math",
-    per_device_train_batch_size=1,
-    gradient_accumulation_steps=8,  # effective batch size = 8
+    output_dir="grpo-qwen-math-baseline",
+    run_name="iid-sampling",
+    per_device_train_batch_size=4,
+    gradient_accumulation_steps=2,
     num_train_epochs=1,
     learning_rate=1e-6,
     bf16=True,
     gradient_checkpointing=True,
     logging_steps=10,
     save_steps=100,
-    max_completion_length=256,
-    num_generations=4,
+    save_total_limit=1,
+    max_completion_length=512,
+    num_generations=8,
+    seed=42,
     report_to="wandb",
+    dataloader_num_workers=4,
 )
 
 trainer = GRPOTrainer(

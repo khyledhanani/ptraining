@@ -267,16 +267,19 @@ dataset    = load_dataset("trl-lib/DeepMath-103K", split="train").select(range(5
 
 training_args = GRPOConfig(
     output_dir="grpo-qwen-math-arithmetic",
-    per_device_train_batch_size=4,      # 1 → 4: A40 has headroom; 4x throughput
-    gradient_accumulation_steps=2,      # 8 → 2: unique prompts/update stays 4×2 = 8
+    run_name="arithmetic-sampling",
+    per_device_train_batch_size=4,
+    gradient_accumulation_steps=2,
     num_train_epochs=1,
     learning_rate=1e-6,
     bf16=True,
     gradient_checkpointing=True,
     logging_steps=10,
     save_steps=100,
-    max_completion_length=512,          # 256 → 512: math needs longer reasoning chains
-    num_generations=8,                  # 4 → 8: finer lattice spacing (1/8 vs 1/4) + stronger GRPO signal
+    save_total_limit=1,
+    max_completion_length=512,
+    num_generations=8,
+    seed=42,
     report_to="wandb",
     dataloader_num_workers=4,
 )
